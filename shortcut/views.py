@@ -15,8 +15,10 @@ import requests
 
 def create_shortcut(request):
         URL = "http://20.244.56.144/evaluation-service/logs"
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
         header = {
-             "Authorization" : "Bearer" + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
         }
         body = {
                 "stack":"backend",
@@ -69,8 +71,10 @@ def create_shortcut(request):
 @APi_view(['GET'])
 def get_shortcut(request, shortcode):
         URL = "http://20.244.56.144/evaluation-service/logs"
+        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
         header = {
-             "Authorization" : "Bearer" + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json"
         }
         body = {
                 "stack":"backend",
