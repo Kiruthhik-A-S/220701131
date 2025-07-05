@@ -14,8 +14,31 @@ import requests
 @APi_view(['POST'])
 
 def create_shortcut(request):
+        auth_url = "http://20.244.56.144/evaluation-service/auth"
+
+        auth_payload = {
+            "email": "220701131@rajalakshmi.edu.in",
+            "name": "Kiruthhik A S",
+            "rollNo": "220701131",
+            "accessCode": "cWyaXW",
+            "clientID": "469d8fbd-c687-4f59-b80b-071db2d64575",
+            "clientSecret": "AgsaCygFHXNKBmaN"
+        }
+        response = requests.post(auth_url, json=auth_payload)
+        response.raise_for_status()
+
+        data = response.json()
+        token = data.get("access_token")  
+
+        if not token:
+            print("Token not found in response:", data)
+        else:
+            print("✅ Token received successfully")
+            print("Token:", token)
+
         URL = "http://20.244.56.144/evaluation-service/logs"
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
+
+        #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk5MjA2LCJpYXQiOjE3NTE2OTgzMDYsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiI2MzcxODMyOS04NTIxLTRmZWUtOTZjNS0wYTg4ZmY2N2Y3MTAiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.bqB9LsVqzIRckLn35PqpY7y-TXTKNpFLQ3HaFn6PSWw"
         header = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json"
@@ -26,19 +49,20 @@ def create_shortcut(request):
             "package":"handler",
             "message": "received string, expected bool"
             }
-        url = request['POST'].get('url', '')
+        url = request.data.get('url', '')
         if not url:
             body['message'] = "URL is required"
             body['handler'] = "create_shortcut"
             respone = requests.post(URL, headers=header, json=body)
+            print(respone.text)
             return Response({'error': 'URL is required'}, status=400)
-        validity = request['POST'].get('validity', 30)
+        validity = request.data.get('validity', 30)
         if validity <= 0:
             body['message'] = "Validity must be a positive integer"
             body['handler'] = "create_shortcut"
             respone = requests.post(URL, headers=header, json=body)
             return Response({'error': 'Validity must be a positive integer'}, status=400)
-        shortcode = request['POST'].get('shortcode', '')
+        shortcode = request.data.get('shortcode', '')
 
         existing_shortcodes = URLMapping.objects.values_list('short_url', flat=True)
         if(shortcode == ""):
@@ -65,13 +89,29 @@ def create_shortcut(request):
         }
         body['message'] = "Shortcode created successfully"
         body['handler'] = "create_shortcut"
-        requests.post(URL, headers=header, json=body)
+        respone = requests.post(URL, headers=header, json=body)
+        print(respone.text)
         return Response(response, status=status.HTTP_201_CREATED)
     
 @APi_view(['GET'])
 def get_shortcut(request, shortcode):
+        auth_url = "http://20.244.56.144/evaluation-service/auth"
+
+        auth_payload = {
+            "email": "220701131@rajalakshmi.edu.in",
+            "name": "Kiruthhik A S",
+            "rollNo": "220701131",
+            "accessCode": "cWyaXW",
+            "clientID": "469d8fbd-c687-4f59-b80b-071db2d64575",
+            "clientSecret": "AgsaCygFHXNKBmaN"
+        }
+        response = requests.post(auth_url, json=auth_payload)
+        response.raise_for_status()
+
+        data = response.json()
+        token = data.get("access_token")  
         URL = "http://20.244.56.144/evaluation-service/logs"
-        token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
+        #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJNYXBDbGFpbXMiOnsiYXVkIjoiaHR0cDovLzIwLjI0NC41Ni4xNDQvZXZhbHVhdGlvbi1zZXJ2aWNlIiwiZW1haWwiOiIyMjA3MDExMzFAcmFqYWxha3NobWkuZWR1LmluIiwiZXhwIjoxNzUxNjk3NjQwLCJpYXQiOjE3NTE2OTY3NDAsImlzcyI6IkFmZm9yZCBNZWRpY2FsIFRlY2hub2xvZ2llcyBQcml2YXRlIExpbWl0ZWQiLCJqdGkiOiJhYzM3Mzg5MS0wYTg2LTRkODAtODczMy05NDFiNzhjMWUzMzgiLCJsb2NhbGUiOiJlbi1JTiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwic3ViIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1In0sImVtYWlsIjoiMjIwNzAxMTMxQHJhamFsYWtzaG1pLmVkdS5pbiIsIm5hbWUiOiJraXJ1dGhoaWsgYSBzIiwicm9sbE5vIjoiMjIwNzAxMTMxIiwiYWNjZXNzQ29kZSI6ImNXeWFYVyIsImNsaWVudElEIjoiNDY5ZDhmYmQtYzY4Ny00ZjU5LWI4MGItMDcxZGIyZDY0NTc1IiwiY2xpZW50U2VjcmV0IjoiQWdzYUN5Z0ZIWE5LQm1hTiJ9.QUO9fa3NssHd4jvSVrV-ZzwyVxRfwoUG-5Ca4tY3s4Y"
         header = {
             "Authorization": f"Bearer {token}",
             "Content-Type": "application/json"
@@ -99,7 +139,8 @@ def get_shortcut(request, shortcode):
         response = URLMappingSerializer(URLmap)
         body['message'] = "Shortcode retrieved successfully"
         body['handler'] = "get_shortcut"
-        requests.post(URL, headers=header, json=body)
+        #response = requests.post(URL, headers=header, json=body)
+        #print(response.text)
         return Response(response.data, status=status.HTTP_200_OK)
 
 
